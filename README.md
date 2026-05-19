@@ -1,1 +1,1 @@
-
+This is the first attempt at a calculator that, given the user input for state in which taxes are paid, and state, federal, and property tax paid, will give a rough estimate of the amount of the total taxes paid allocated to some of the broadest tax categories in the United States.  As of this version, the models used break the states into 5 different tax categories to determine the percent of state/sales and property tax allocated to each category. A future version should include numbers specific to each state that are then updated annually to give a better estimate.
