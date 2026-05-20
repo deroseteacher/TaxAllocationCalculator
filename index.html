@@ -473,6 +473,22 @@
 
         // Conditional branching across the fiscal matrix
         switch(profile) {
+
+            case "ALABAMA":
+                categories = {
+                    "Health Care": (stateTax * 0.20) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.45) + (stateTax * 0.55) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.40),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.06),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.09) + (propTax * 0.10) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.05) + (propTax * 0.03) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.05) + (propTax * 0.02) + fedAlloc.admin
+            };
+            break;
+            
             case "COLORADO":
                 categories = {
                     "Health Care": (stateTax * 0.37) + fedAlloc.healthSubsidies + fedAlloc.medicare,
