@@ -294,10 +294,10 @@
     // 1. Comprehensive State Registry & Profiles Mapping
     const statesData = [
         { name: "Alabama", code: "AL", profile: "ALABAMA" },
-        { name: "Alaska", code: "AK", profile: "NO_INCOME" },
-        { name: "Arizona", code: "AZ", profile: "STANDARD" },
-        { name: "Arkansas", code: "AR", profile: "STANDARD" },
-        { name: "California", code: "CA", profile: "HIGH_SERVICES" },
+        { name: "Alaska", code: "AK", profile: "ALASKA" },
+        { name: "Arizona", code: "AZ", profile: "ARIZONA" },
+        { name: "Arkansas", code: "AR", profile: "ARKANSAS" },
+        { name: "California", code: "CA", profile: "CALIFORNIA" },
         { name: "Colorado", code: "CO", profile: "COLORADO" },
         { name: "Connecticut", code: "CT", profile: "HIGH_PROPERTY" },
         { name: "Delaware", code: "DE", profile: "STANDARD" },
@@ -348,6 +348,7 @@
     // 2. Structural Statistical Archetypes Definitions
     const profilesDesc = {
         "ALABAMA": "Profile: Alabama. Education-weighted model reflecting the state’s separate Education Trust Fund, with General Fund emphasis on Medicaid, corrections, public safety, and core state services.",
+        "ALASKA": "Profile: Alaska. No individual income tax model with heavier emphasis on education, health care, public safety, transportation, and statewide infrastructure needs shaped by Alaska’s geography and revenue structure.",
         "COLORADO": "Profile: Colorado. Flat tax revenue split cleanly among Medicaid allocations and customized K-12 balancing equations.",
         "STANDARD": "Profile: Standard Balanced Model. Baseline state income/sales configurations matching national NASBO median guidelines.",
         "HIGH_SERVICES": "Profile: Expanded Services Model. Characterized by expansive state program spending structures, localized safety nets, and increased baseline transit funding profiles.",
@@ -487,6 +488,21 @@
                     "Public Safety & Justice": (stateTax * 0.09) + (propTax * 0.10) + fedAlloc.justice,
                     "Transportation & Infrastructure": (stateTax * 0.05) + (propTax * 0.03) + fedAlloc.transportation,
                     "Gov Administration & Other": (stateTax * 0.05) + (propTax * 0.02) + fedAlloc.admin
+            };
+            break;
+
+            case "ALASKA":
+                categories = {
+                    "Health Care": (stateTax * 0.24) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.38) + (stateTax * 0.28) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.42),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.07),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.12) + (propTax * 0.08) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.17) + (propTax * 0.05) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.12) + (propTax * 0.07) + fedAlloc.admin
             };
             break;
             
