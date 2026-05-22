@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corrections Policy | TaxGal United States</title>
+  <meta name="description" content="How TaxGal United States handles corrections, source suggestions, official budget feedback, accessibility notes, and calculator improvements.">
+  <link rel="stylesheet" href="site.css">
+  <style>
+    .article-shell { max-width: 960px; margin: 0 auto; padding: 28px 20px 46px; }
+    .article-top { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:20px; }
+    .article-brand { display:inline-flex; align-items:center; gap:10px; color:#134e4a; font-weight:900; text-decoration:none; }
+    .article-brand img { width:46px; height:46px; object-fit:contain; border-radius:50%; }
+    .language-toggle { border:1px solid rgba(15,23,42,.18); background:#fff; color:#134e4a; border-radius:999px; padding:10px 14px; font-weight:800; cursor:pointer; box-shadow:0 8px 24px rgba(15,23,42,.08); }
+    .article-shell h1 { font-size:clamp(2rem,5vw,3.4rem); line-height:1.02; margin:18px 0; color:#17212b; }
+    .article-shell h2 { margin-top:34px; color:#134e4a; }
+    .article-shell p, .article-shell li { color:#475569; line-height:1.75; font-size:1.04rem; }
+    .article-shell ul, .article-shell ol { padding-left:1.25rem; }
+    .callout { border-left:4px solid #0f766e; background:#f0fdfa; padding:16px 18px; margin:24px 0; border-radius:8px; }
+    .back-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
+    .back-links a { color:#0f766e; font-weight:800; text-decoration:none; }
+    a:focus-visible, button:focus-visible { outline:3px solid #f59e0b; outline-offset:3px; }
+    @media (max-width:720px) { .article-top { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body class="site-page">
+  <main class="article-shell">
+    <div class="article-top"><a class="article-brand" href="index.html"><img src="assets/taxgal-mascot-generated.png" alt="TaxGal mascot"><span>TaxGal United States</span></a><button id="siteLanguageToggle" class="language-toggle" type="button">Show in Spanish</button></div>
+    <h1 data-en="Corrections Policy" data-local="Política De Correcciones">Corrections Policy</h1>
+    <p data-en="TaxGal is meant to get better over time. Because public budgets are complex, reader corrections and official source suggestions are especially helpful." data-local="TaxGal está diseñado para mejorar con el tiempo. Como los presupuestos públicos son complejos, las correcciones de lectores y las sugerencias de fuentes oficiales son especialmente útiles.">TaxGal is meant to get better over time. Because public budgets are complex, reader corrections and official source suggestions are especially helpful.</p>
+    <div class="callout"><p data-en="Last Updated: May 2026" data-local="Última Actualización: Mayo De 2026">Last Updated: May 2026</p></div>
+    <h2 data-en="What To Send" data-local="Qué Enviar">What To Send</h2>
+    <ul>
+      <li data-en="The page or calculator category that may need correction." data-local="La página o categoría del calculador que podría necesitar corrección.">The page or calculator category that may need correction.</li>
+      <li data-en="A link to the official source, budget table, audit, public accounts document, or government report." data-local="Un enlace a la fuente oficial, tabla presupuestaria, auditoría, cuenta pública o informe gubernamental.">A link to the official source, budget table, audit, public accounts document, or government report.</li>
+      <li data-en="The fiscal year, publication date, and a short explanation of what should change." data-local="El año fiscal, la fecha de publicación y una breve explicación de lo que debería cambiar.">The fiscal year, publication date, and a short explanation of what should change.</li>
+      <li data-en="For accessibility issues, describe the device, browser, and part of the page that caused trouble." data-local="Para problemas de accesibilidad, describe el dispositivo, navegador y parte de la página que causó dificultad.">For accessibility issues, describe the device, browser, and part of the page that caused trouble.</li>
+    </ul>
+    <h2 data-en="How Corrections Are Reviewed" data-local="Cómo Se Revisan Las Correcciones">How Corrections Are Reviewed</h2>
+    <ol>
+      <li data-en="The suggestion is checked against the current page, calculator category, and source notes." data-local="La sugerencia se compara con la página actual, la categoría del calculador y las notas de fuentes.">The suggestion is checked against the current page, calculator category, and source notes.</li>
+      <li data-en="Official public sources are preferred over commentary, summaries, or secondary sources." data-local="Se prefieren fuentes públicas oficiales antes que comentarios, resúmenes o fuentes secundarias.">Official public sources are preferred over commentary, summaries, or secondary sources.</li>
+      <li data-en="If the correction improves the model, wording, source quality, or accessibility, the page may be updated." data-local="Si la corrección mejora el modelo, la redacción, la calidad de fuentes o la accesibilidad, la página puede actualizarse.">If the correction improves the model, wording, source quality, or accessibility, the page may be updated.</li>
+    </ol>
+    <h2 data-en="Government Officials And Policy Staff" data-local="Funcionarios Públicos Y Personal De Política">Government Officials And Policy Staff</h2>
+    <p data-en="Budget, finance, audit, program, and policy officials are invited to contact hi@taxgal.org if they can help update the calculator with more accurate percentages, current fiscal-year data, or clearer category mappings." data-local="Funcionarios de presupuesto, finanzas, auditoría, programas y política están invitados a contactar hi@taxgal.org si pueden ayudar a actualizar el calculador con porcentajes más precisos, datos fiscales actuales o categorías más claras.">Budget, finance, audit, program, and policy officials are invited to contact hi@taxgal.org if they can help update the calculator with more accurate percentages, current fiscal-year data, or clearer category mappings.</p>
+    <div class="back-links"><a href="index.html" data-en="Back To Calculator" data-local="Volver Al Calculador">Back To Calculator</a></div>
+  </main>
+  <script>
+    const storageKey = 'taxgalusLanguage';
+    const localLanguageLabel = 'Show in Spanish';
+    function toggleLanguage() {
+      const next = document.documentElement.lang === 'en' ? 'local' : 'en';
+      document.documentElement.lang = next === 'en' ? 'en' : 'es';
+      document.querySelectorAll('[data-en][data-local]').forEach((node) => { node.innerHTML = next === 'en' ? node.dataset.en : node.dataset.local; });
+      document.getElementById('siteLanguageToggle').textContent = next === 'en' ? localLanguageLabel : 'Show in English';
+      try { localStorage.setItem(storageKey, next === 'en' ? 'en' : 'local'); } catch (error) {}
+    }
+    document.getElementById('siteLanguageToggle').addEventListener('click', toggleLanguage);
+    try { const requestedLang = new URLSearchParams(window.location.search).get('lang'); const savedLang = localStorage.getItem(storageKey); if (requestedLang === 'local' || savedLang === 'local') toggleLanguage(); } catch (error) {}
+  </script>
+</body>
+</html>

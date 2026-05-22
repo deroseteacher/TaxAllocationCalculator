@@ -1,0 +1,220 @@
+.site-nav {
+    max-width: 1120px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 140, 69, 0.10), transparent 34rem),
+        radial-gradient(circle at top right, rgba(30, 58, 138, 0.10), transparent 32rem),
+        #f4f6f9;
+}
+.site-nav a {
+    color: #1e3a8a;
+    font-weight: 700;
+    text-decoration: none;
+}
+.site-nav .site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.site-brand::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: url("assets/taxgal-mascot-generated.png") center / cover no-repeat;
+    box-shadow: 0 0 0 2px #fff, 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+.site-nav a:hover {
+    text-decoration: underline;
+}
+.site-nav .site-brand {
+    color: #0f172a;
+    font-size: 20px;
+    letter-spacing: 0;
+}
+.site-nav .site-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+    font-size: 14px;
+}
+.site-page {
+    max-width: 980px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 34px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.site-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr);
+    gap: 28px;
+    align-items: center;
+}
+.site-hero h1 {
+    font-size: 46px;
+    line-height: 1.04;
+}
+.site-hero-art {
+    display: flex;
+    justify-content: center;
+}
+.site-hero-art img {
+    width: min(100%, 310px);
+    height: auto;
+    filter: drop-shadow(0 18px 28px rgba(15, 23, 42, 0.16));
+}
+.site-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+.site-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    padding: 11px 14px;
+    background: #1e3a8a;
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: 800;
+}
+.site-button.secondary {
+    background: #e0ecff;
+    color: #1e3a8a !important;
+}
+.site-kicker {
+    color: #008c45;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+.site-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+}
+.site-stat {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+}
+.site-stat strong {
+    display: block;
+    color: #0f172a;
+    font-size: 24px;
+}
+.site-stat span {
+    color: #64748b;
+    font-size: 13px;
+}
+.site-page h1 {
+    margin: 0 0 10px;
+    color: #1e3a8a;
+    font-size: 34px;
+}
+.site-page .subtitle {
+    color: #64748b;
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 0 0 28px;
+}
+.site-page section {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 22px;
+    margin-top: 22px;
+}
+.site-page h2 {
+    color: #0f172a;
+    font-size: 22px;
+    margin: 0 0 10px;
+}
+.site-page h3 {
+    color: #0f172a;
+    font-size: 17px;
+    margin: 18px 0 8px;
+}
+.site-page p,
+.site-page li {
+    line-height: 1.65;
+}
+.site-page ul,
+.site-page ol {
+    margin: 10px 0 0 22px;
+    padding: 0;
+}
+.site-page a {
+    color: #1e3a8a;
+    font-weight: 700;
+}
+.site-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+.site-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.site-card:hover {
+    transform: translateY(-2px);
+    border-color: #b9c9e6;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+.site-note {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 18px;
+}
+.site-footer-simple {
+    max-width: 980px;
+    margin: 18px auto 0;
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (max-width: 700px) {
+    .site-nav {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .site-nav .site-links {
+        justify-content: flex-start;
+    }
+    .site-page {
+        padding: 22px;
+    }
+    .site-hero {
+        grid-template-columns: 1fr;
+    }
+    .site-hero h1 {
+        font-size: 36px;
+    }
+    .site-stats {
+        grid-template-columns: 1fr;
+    }
+}

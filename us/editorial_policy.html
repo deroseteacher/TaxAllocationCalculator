@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editorial Policy | TaxGal United States</title>
+  <meta name="description" content="TaxGal United States editorial policy for educational tax footprint calculators, source preference, updates, uncertainty, and plain-language public finance content.">
+  <link rel="stylesheet" href="site.css">
+  <style>
+    .article-shell { max-width: 960px; margin: 0 auto; padding: 28px 20px 46px; }
+    .article-top { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:20px; }
+    .article-brand { display:inline-flex; align-items:center; gap:10px; color:#134e4a; font-weight:900; text-decoration:none; }
+    .article-brand img { width:46px; height:46px; object-fit:contain; border-radius:50%; }
+    .language-toggle { border:1px solid rgba(15,23,42,.18); background:#fff; color:#134e4a; border-radius:999px; padding:10px 14px; font-weight:800; cursor:pointer; box-shadow:0 8px 24px rgba(15,23,42,.08); }
+    .article-shell h1 { font-size:clamp(2rem,5vw,3.4rem); line-height:1.02; margin:18px 0; color:#17212b; }
+    .article-shell h2 { margin-top:34px; color:#134e4a; }
+    .article-shell p, .article-shell li { color:#475569; line-height:1.75; font-size:1.04rem; }
+    .article-shell ul { padding-left:1.25rem; }
+    .callout { border-left:4px solid #0f766e; background:#f0fdfa; padding:16px 18px; margin:24px 0; border-radius:8px; }
+    .back-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
+    .back-links a { color:#0f766e; font-weight:800; text-decoration:none; }
+    a:focus-visible, button:focus-visible { outline:3px solid #f59e0b; outline-offset:3px; }
+    @media (max-width:720px) { .article-top { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body class="site-page">
+  <main class="article-shell">
+    <div class="article-top"><a class="article-brand" href="index.html"><img src="assets/taxgal-mascot-generated.png" alt="TaxGal mascot"><span>TaxGal United States</span></a><button id="siteLanguageToggle" class="language-toggle" type="button">Show in Spanish</button></div>
+    <h1 data-en="Editorial Policy" data-local="Política Editorial">Editorial Policy</h1>
+    <p data-en="TaxGal is an educational public finance project. The goal is to help taxpayers understand how their tax dollars may connect to public services, budget priorities, public debt, and government accountability." data-local="TaxGal es un proyecto educativo de finanzas públicas. El objetivo es ayudar a los contribuyentes a entender cómo sus impuestos pueden relacionarse con servicios públicos, prioridades presupuestarias, deuda pública y rendición de cuentas gubernamental.">TaxGal is an educational public finance project. The goal is to help taxpayers understand how their tax dollars may connect to public services, budget priorities, public debt, and government accountability.</p>
+    <div class="callout"><p data-en="Last Updated: May 2026" data-local="Última Actualización: Mayo De 2026">Last Updated: May 2026</p></div>
+    <h2 data-en="Editorial Principles" data-local="Principios Editoriales">Editorial Principles</h2>
+    <ul>
+      <li data-en="Use plain language so public budget information is easier for non-specialists to read." data-local="Usar lenguaje claro para que la información presupuestaria pública sea más fácil de leer para personas no especializadas.">Use plain language so public budget information is easier for non-specialists to read.</li>
+      <li data-en="Prefer official public sources, including budget offices, treasury departments, legislative fiscal offices, public accounts, audit reports, and local finance documents." data-local="Preferir fuentes públicas oficiales, incluidas oficinas presupuestarias, departamentos de tesorería, oficinas fiscales legislativas, cuentas públicas, auditorías y documentos financieros locales.">Prefer official public sources, including budget offices, treasury departments, legislative fiscal offices, public accounts, audit reports, and local finance documents.</li>
+      <li data-en="Explain uncertainty clearly when exact tax-dollar tracing is not possible." data-local="Explicar claramente la incertidumbre cuando no sea posible rastrear exactamente cada dólar de impuestos.">Explain uncertainty clearly when exact tax-dollar tracing is not possible.</li>
+      <li data-en="Avoid partisan endorsements. TaxGal may discuss transparency, accountability, waste reduction, and civic participation without supporting a candidate or party." data-local="Evitar respaldos partidistas. TaxGal puede tratar transparencia, rendición de cuentas, reducción de desperdicio y participación cívica sin apoyar a un candidato o partido.">Avoid partisan endorsements. TaxGal may discuss transparency, accountability, waste reduction, and civic participation without supporting a candidate or party.</li>
+    </ul>
+    <h2 data-en="How Content Is Updated" data-local="Cómo Se Actualiza El Contenido">How Content Is Updated</h2>
+    <p data-en="Calculator pages and source notes may be updated when better official data becomes available, when a model needs clarification, or when a reader identifies an error. Updates are intended to improve clarity, source quality, and usefulness." data-local="Las páginas del calculador y las notas de fuentes pueden actualizarse cuando existan mejores datos oficiales, cuando un modelo necesite aclaración o cuando un lector identifique un error. Las actualizaciones buscan mejorar claridad, calidad de fuentes y utilidad.">Calculator pages and source notes may be updated when better official data becomes available, when a model needs clarification, or when a reader identifies an error. Updates are intended to improve clarity, source quality, and usefulness.</p>
+    <h2 data-en="Advertising And Independence" data-local="Publicidad E Independencia">Advertising And Independence</h2>
+    <p data-en="If TaxGal displays advertising, advertising does not determine the calculator methodology, editorial conclusions, source preference, or correction decisions. Educational usefulness and source transparency come first." data-local="Si TaxGal muestra publicidad, la publicidad no determina la metodología del calculador, las conclusiones editoriales, la preferencia de fuentes ni las decisiones de corrección. La utilidad educativa y la transparencia de fuentes son lo primero.">If TaxGal displays advertising, advertising does not determine the calculator methodology, editorial conclusions, source preference, or correction decisions. Educational usefulness and source transparency come first.</p>
+    <div class="back-links"><a href="index.html" data-en="Back To Calculator" data-local="Volver Al Calculador">Back To Calculator</a></div>
+  </main>
+  <script>
+    const storageKey = 'taxgalusLanguage';
+    const localLanguageLabel = 'Show in Spanish';
+    function toggleLanguage() {
+      const next = document.documentElement.lang === 'en' ? 'local' : 'en';
+      document.documentElement.lang = next === 'en' ? 'en' : 'es';
+      document.querySelectorAll('[data-en][data-local]').forEach((node) => { node.innerHTML = next === 'en' ? node.dataset.en : node.dataset.local; });
+      document.getElementById('siteLanguageToggle').textContent = next === 'en' ? localLanguageLabel : 'Show in English';
+      try { localStorage.setItem(storageKey, next === 'en' ? 'en' : 'local'); } catch (error) {}
+    }
+    document.getElementById('siteLanguageToggle').addEventListener('click', toggleLanguage);
+    try { const requestedLang = new URLSearchParams(window.location.search).get('lang'); const savedLang = localStorage.getItem(storageKey); if (requestedLang === 'local' || savedLang === 'local') toggleLanguage(); } catch (error) {}
+  </script>
+</body>
+</html>

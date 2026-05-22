@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>American Tax Footprint Calculator | TaxGal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        .layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 40px;
+        }
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+        .input-section {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        
+        .form-note { color: #607d8b; font-size: 13px; line-height: 1.45; margin: 4px 0 16px; }
+button {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .chart-wrapper {
+            position: relative; 
+            width: 100%; 
+            max-width: 420px;
+            margin-bottom: 25px;
+        }
+        #totalDisplay {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+        #profileDisplay {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            max-width: 450px;
+        }
+        #profileDisplay a {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .category-tools {
+            width: 100%;
+            max-width: 620px;
+            margin-top: 18px;
+        }
+        .category-detail {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+        .category-detail h2 {
+            margin: 0 0 8px;
+            color: #0f172a;
+            font-size: 20px;
+        }
+        .category-detail .amount {
+            margin: 0 0 10px;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        .category-detail p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .category-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .category-list-header h2 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 20px;
+        }
+        .print-button {
+            width: auto;
+            margin-top: 0;
+            padding: 10px 14px;
+            white-space: nowrap;
+        }
+        .tax-category-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .tax-category-list li {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 14px;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .tax-category-list li:last-child {
+            border-bottom: none;
+        }
+        .tax-category-list button {
+            width: auto;
+            margin: 0;
+            padding: 7px 10px;
+            background: #e0ecff;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+        .tax-category-list button:hover {
+            background: #c7dcff;
+        }
+        .tax-category-list .category-amount {
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+        .site-footer {
+            margin-top: 34px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            color: #475569;
+        }
+        .footer-brand {
+            display: grid;
+            grid-template-columns: 1.1fr 1.9fr;
+            gap: 22px;
+            align-items: start;
+            margin-bottom: 18px;
+        }
+        .footer-brand h2 {
+            margin: 0 0 8px;
+            color: #0f172a;
+            font-size: 22px;
+        }
+        .footer-brand p,
+        .footer-panel p,
+        .footer-panel li {
+            line-height: 1.55;
+        }
+        .footer-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .footer-tab {
+            width: auto;
+            margin: 0;
+            padding: 9px 12px;
+            background: #e0ecff;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+        .footer-tab:hover,
+        .footer-tab.active {
+            background: #1e3a8a;
+            color: #fff;
+        }
+        .footer-panel {
+            display: none;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .footer-panel.active {
+            display: block;
+        }
+        .footer-panel h3 {
+            margin: 0 0 8px;
+            color: #0f172a;
+            font-size: 18px;
+        }
+        .footer-panel ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+        .footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 13px;
+        }
+        .footer-meta a {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        @media (max-width: 560px) {
+            .footer-brand {
+                grid-template-columns: 1fr;
+            }
+            .category-list-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+            .print-button {
+                width: 100%;
+            }
+            .tax-category-list li {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .tax-category-list button {
+                width: 100%;
+            }
+        }
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            .input-section,
+            .chart-wrapper,
+            .category-detail,
+            .print-button,
+            #profileDisplay,
+            .site-footer {
+                display: none !important;
+            }
+            .layout {
+                display: block;
+            }
+            .output-section {
+                align-items: stretch;
+            }
+            h1,
+            p.subtitle,
+            #totalDisplay {
+                text-align: left;
+            }
+            .category-tools {
+                max-width: none;
+            }
+            .tax-category-list li {
+                grid-template-columns: 1fr auto;
+            }
+            .tax-category-list button {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="site.css">
+</head>
+<body>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <a class="site-brand" href="index.html">TaxGal</a>
+        <div class="site-links">
+            <a href="index.html">Calculators</a>
+            <a href="why_taxes_matter.html">Why Taxes Matter</a>
+            <a href="methodology_sources.html">Methodology</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy_policy.html">Privacy</a>
+        </div>
+    </nav>
+
+<div class="container">
+    <h1>All-States & Federal Tax Allocation Calculator</h1>
+    <p class="subtitle">Enter your details to generate an adaptive data visualization based on individual state spending models.</p>
+    
+    <div class="layout">
+        <div class="input-section">
+            <div class="form-group">
+                <label for="userState">Select Your State</label>
+                <select id="userState" onchange="calculateTaxes()">
+                    </select>
+            </div>
+            <div class="form-group">
+                <label for="fedTax">Federal Income Tax Paid ($)</label>
+                <input type="number" id="fedTax" value="6749" min="0">
+            </div>
+            <div class="form-group">
+                <label for="stateTax">State Income / Sales Tax Paid ($)</label>
+                <input type="number" id="stateTax" value="4307" min="0">
+            </div>
+            <div class="form-group">
+                <label for="propTax">Annual Property Tax Paid ($)</label>
+                <input type="number" id="propTax" value="4230" min="0">
+            </div>
+            <div class="form-note default-values-note" data-en="Default values are editable educational starting points. Use your own tax amounts when available; official country-average defaults will be added when reliable current budget and household tax data can be verified." data-local="These default values are editable educational starting points. Use your own tax amounts when available; official country-average defaults will be added when reliable current data can be verified.">Default values are editable educational starting points. Use your own tax amounts when available; official country-average defaults will be added when reliable current budget and household tax data can be verified.</div>
+            <button onclick="calculateTaxes()">Calculate Allocation</button>
+        </div>
+
+        <div class="output-section">
+            <div id="totalDisplay">Total Tax Footprint: $0.00</div>
+            <div class="chart-wrapper">
+                <canvas id="taxChart"></canvas>
+            </div>
+            <div id="profileDisplay">Loading profile details...</div>
+            <div class="category-tools">
+                <div class="category-detail" id="categoryDetail">
+                    <h2>Category Details</h2>
+                    <p>Select a donut slice or choose a category from the list to see more detail.</p>
+                </div>
+                <div class="category-list-header">
+                    <h2>Printable Category List</h2>
+                    <button class="print-button" type="button" onclick="printCategoryList()">Print List</button>
+                </div>
+                <ul class="tax-category-list" id="categoryList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer" aria-label="About and legal information">
+        <div class="footer-brand">
+            <div>
+                <h2>Tax Allocation Calculators</h2>
+                <p>Educational calculators for exploring how taxes may support public services across federal, state, and local budgets.</p>
+                <p><a href="why_taxes_matter.html">Why do we pay taxes?</a></p>
+                <p><a href="methodology_sources.html">Methodology & Sources</a></p>
+            </div>
+            <p>These tools are designed to make public finance easier to understand and to support more informed civic decisions. The calculations use public budget sources and simplified allocation models, so results should be read as an informed estimate rather than a precise government statement.</p>
+        </div>
+
+        <div class="footer-tabs" role="tablist" aria-label="Footer information">
+            <button class="footer-tab active" type="button" role="tab" aria-selected="true" aria-controls="footer-about" onclick="setFooterTab('about', this)">About Me</button>
+            <button class="footer-tab" type="button" role="tab" aria-selected="false" aria-controls="footer-contact" onclick="setFooterTab('contact', this)">Contact</button>
+            <button class="footer-tab" type="button" role="tab" aria-selected="false" aria-controls="footer-disclaimer" onclick="setFooterTab('disclaimer', this)">Disclaimer</button>
+            <button class="footer-tab" type="button" role="tab" aria-selected="false" aria-controls="footer-terms" onclick="setFooterTab('terms', this)">Terms of Service</button>
+            <button class="footer-tab" type="button" role="tab" aria-selected="false" aria-controls="footer-privacy" onclick="setFooterTab('privacy', this)">Privacy Policy</button>
+            <button class="footer-tab" type="button" role="tab" aria-selected="false" aria-controls="footer-cookies" onclick="setFooterTab('cookies', this)">Cookie Settings</button>
+        </div>
+
+        <div class="footer-panel active" id="footer-about" role="tabpanel">
+            <h3>About Me</h3>
+            <p>I built this calculator project to help people visualize where their taxes may go in plain language. The goal is civic understanding: turn large budget categories into a clearer picture of public priorities.</p>
+            <p>The calculator runs in your browser and uses simplified formulas based on public budget information, state spending patterns, and category descriptions.</p>
+        </div>
+
+        <div class="footer-panel" id="footer-contact" role="tabpanel">
+            <h3>Contact</h3>
+            <p>Questions, corrections, or source suggestions are welcome. Email <a href="mailto:hi@taxgal.org">hi@taxgal.org</a>.</p>
+            <ul>
+                <li>Best for: source corrections, accessibility feedback, and calculator improvement ideas.</li>
+                <li>For detailed corrections, include the calculator page, affected category or region, and the official source you recommend.</li>
+            </ul>
+        </div>
+
+        <div class="footer-panel" id="footer-disclaimer" role="tabpanel">
+            <h3>Disclaimer</h3>
+            <p>This calculator is for educational and informational use only. It does not provide tax, legal, accounting, investment, or public policy advice.</p>
+            <p>Results are estimates based on simplified allocation models and public data sources. They are not an official receipt, audit, government statement, or guarantee of how any specific tax dollar was used.</p>
+        </div>
+
+        <div class="footer-panel" id="footer-terms" role="tabpanel">
+            <h3>Terms of Service</h3>
+            <p>By using this calculator, you agree to use it as an educational tool and to independently verify any information before relying on it for decisions.</p>
+            <ul>
+                <li>No warranty is provided for completeness, accuracy, timeliness, or fitness for a particular purpose.</li>
+                <li>You are responsible for checking official government sources for current tax rules and budget figures.</li>
+                <li>The calculator may be updated, corrected, or removed at any time.</li>
+            </ul>
+            <p><a href="terms_of_service.html">Read the full Terms of Service</a></p>
+        </div>
+
+        <div class="footer-panel" id="footer-privacy" role="tabpanel">
+            <h3>Privacy Policy</h3>
+            <p>This standalone calculator is designed to run locally in your browser. The values you enter are used on the page to calculate and draw the chart.</p>
+            <p>When hosted at taxgal.org, standard hosting logs and third-party advertising services such as Google AdSense may use cookies or similar technologies. Calculator inputs are still intended to be processed in the browser for the chart experience.</p>
+            <p><a href="privacy_policy.html">Read the full Privacy Policy</a></p>
+        </div>
+
+        <div class="footer-panel" id="footer-cookies" role="tabpanel">
+            <h3>Cookie Settings</h3>
+            <p>The calculator itself does not need cookies for inputs or chart drawing. If TaxGal uses advertising, analytics, embedded media, or other third-party services, those services may use cookies subject to their own policies and your browser settings.</p>
+            <p><a href="cookie_policy.html">Read the Cookie Policy</a></p>
+        </div>
+
+        <div class="footer-meta">
+            <span>Privacy-first calculator. No account required.</span>
+            <span><a href="methodology_sources.html">Methodology & Sources</a></span>
+            <span><a href="why_taxes_matter.html">Why taxes matter</a></span>
+            <span><a href="disclaimer.html">Disclaimer</a></span>
+            <span><a href="contact.html">Contact</a></span>
+            <span>Last updated: 2026</span>
+        </div>
+    </footer>
+</div>
+
+<script>
+    // 1. Comprehensive State Registry & Profiles Mapping
+    const statesData = [
+        { name: "Alabama", code: "AL", profile: "ALABAMA" },
+        { name: "Alaska", code: "AK", profile: "ALASKA" },
+        { name: "Arizona", code: "AZ", profile: "ARIZONA" },
+        { name: "Arkansas", code: "AR", profile: "ARKANSAS" },
+        { name: "California", code: "CA", profile: "CALIFORNIA" },
+        { name: "Colorado", code: "CO", profile: "COLORADO" },
+        { name: "Connecticut", code: "CT", profile: "CONNECTICUT" },
+        { name: "Delaware", code: "DE", profile: "DELAWARE" },
+        { name: "Florida", code: "FL", profile: "FLORIDA" },
+        { name: "Georgia", code: "GA", profile: "GEORGIA" },
+        { name: "Hawaii", code: "HI", profile: "HAWAII" },
+        { name: "Idaho", code: "ID", profile: "IDAHO" },
+        { name: "Illinois", code: "IL", profile: "ILLINOIS" },
+        { name: "Indiana", code: "IN", profile: "INDIANA" },
+        { name: "Iowa", code: "IA", profile: "IOWA" },
+        { name: "Kansas", code: "KS", profile: "KANSAS" },
+        { name: "Kentucky", code: "KY", profile: "KENTUCKY" },
+        { name: "Louisiana", code: "LA", profile: "LOUISIANA" },
+        { name: "Maine", code: "ME", profile: "MAINE" },
+        { name: "Maryland", code: "MD", profile: "MARYLAND" },
+        { name: "Massachusetts", code: "MA", profile: "MASSACHUSETTS" },
+        { name: "Michigan", code: "MI", profile: "MICHIGAN" },
+        { name: "Minnesota", code: "MN", profile: "MINNESOTA" },
+        { name: "Mississippi", code: "MS", profile: "MISSISSIPPI" },
+        { name: "Missouri", code: "MO", profile: "MISSOURI" },
+        { name: "Montana", code: "MT", profile: "MONTANA" },
+        { name: "Nebraska", code: "NE", profile: "NEBRASKA" },
+        { name: "Nevada", code: "NV", profile: "NEVADA" },
+        { name: "New Hampshire", code: "NH", profile: "NEW_HAMPSHIRE" },
+        { name: "New Jersey", code: "NJ", profile: "NEW_JERSEY" },
+        { name: "New Mexico", code: "NM", profile: "NEW_MEXICO" },
+        { name: "New York", code: "NY", profile: "NEW_YORK" },
+        { name: "North Carolina", code: "NC", profile: "NORTH_CAROLINA" },
+        { name: "North Dakota", code: "ND", profile: "NORTH_DAKOTA" },
+        { name: "Ohio", code: "OH", profile: "OHIO" },
+        { name: "Oklahoma", code: "OK", profile: "OKLAHOMA" },
+        { name: "Oregon", code: "OR", profile: "OREGON" },
+        { name: "Pennsylvania", code: "PA", profile: "PENNSYLVANIA" },
+        { name: "Rhode Island", code: "RI", profile: "RHODE_ISLAND" },
+        { name: "South Carolina", code: "SC", profile: "SOUTH_CAROLINA" },
+        { name: "South Dakota", code: "SD", profile: "SOUTH_DAKOTA" },
+        { name: "Tennessee", code: "TN", profile: "TENNESSEE" },
+        { name: "Texas", code: "TX", profile: "TEXAS" },
+        { name: "Utah", code: "UT", profile: "UTAH" },
+        { name: "Vermont", code: "VT", profile: "VERMONT" },
+        { name: "Virginia", code: "VA", profile: "VIRGINIA" },
+        { name: "Washington", code: "WA", profile: "WASHINGTON" },
+        { name: "West Virginia", code: "WV", profile: "WEST_VIRGINIA" },
+        { name: "Wisconsin", code: "WI", profile: "WISCONSIN" },
+        { name: "Wyoming", code: "WY", profile: "WYOMING" }
+    ];
+
+    // 2. Structural Statistical Archetypes Definitions
+    const profilesDesc = {
+        "ALABAMA": "Profile: Alabama. Education-weighted model reflecting Alabama's Education Trust Fund, with General Fund support for Medicaid, criminal justice, public health and safety, mental health, courts, and other core state services. Source: <a href=\"https://budget.alabama.gov/state-receipts/\" target=\"_blank\" rel=\"noopener noreferrer\">Alabama Executive Budget Office</a>.",
+        "ALASKA": "Profile: Alaska. No individual income tax model with heavier transportation, infrastructure, public safety, and statewide service needs shaped by geography and resource revenue. Source: <a href=\"https://omb.alaska.gov/fiscal-year-2026-enacted/\" target=\"_blank\" rel=\"noopener noreferrer\">Alaska Office of Management and Budget</a>.",
+        "ARIZONA": "Profile: Arizona. Growth-state model balancing education, Medicaid, transportation, border-region public safety, and local services. Source: <a href=\"https://www.azjlbc.gov/26AR/26ar.htm\" target=\"_blank\" rel=\"noopener noreferrer\">Arizona Joint Legislative Budget Committee</a>.",
+        "ARKANSAS": "Profile: Arkansas. Standard state model with stronger health care and education weights, plus rural infrastructure and public safety needs. Source: <a href=\"https://www.dfa.arkansas.gov/budget/\" target=\"_blank\" rel=\"noopener noreferrer\">Arkansas Department of Finance and Administration</a>.",
+        "CALIFORNIA": "Profile: California. Expanded services model with higher health, education, income security, transit, and state operations weights. Source: <a href=\"https://ebudget.ca.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">California Department of Finance</a>.",
+        "COLORADO": "Profile: Colorado. Balanced model with customized K-12, Medicaid, local services, transportation, and public safety allocations. Source: <a href=\"https://ospb.colorado.gov/budgeting\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado Office of State Planning and Budgeting</a>.",
+        "CONNECTICUT": "Profile: Connecticut. Local-centric property model with elevated school and municipal service weights, alongside health care and state administration. Source: <a href=\"https://portal.ct.gov/opm/bud-budget/bud-current-budget/current-budget\" target=\"_blank\" rel=\"noopener noreferrer\">Connecticut Office of Policy and Management</a>.",
+        "DELAWARE": "Profile: Delaware. Compact-state model with stronger state-funded education, health care, and general government operations. Source: <a href=\"https://budget.delaware.gov/budget/fy2026/\" target=\"_blank\" rel=\"noopener noreferrer\">Delaware Office of Management and Budget</a>.",
+        "FLORIDA": "Profile: Florida. No individual income tax model emphasizing education, health care, transportation, public safety, and state services funded through alternative revenues. Source: <a href=\"https://floridafiscalportal.state.fl.us/\" target=\"_blank\" rel=\"noopener noreferrer\">Florida Fiscal Portal</a>.",
+        "GEORGIA": "Profile: Georgia. Growth-state model with strong education, health care, transportation, and public safety allocations. Source: <a href=\"https://opb.georgia.gov/budget-information/budget-documents\" target=\"_blank\" rel=\"noopener noreferrer\">Georgia Office of Planning and Budget</a>.",
+        "HAWAII": "Profile: Hawaii. Statewide services model with larger education, health care, transportation, and centralized state operations weights. Source: <a href=\"https://budget.hawaii.gov/budget/\" target=\"_blank\" rel=\"noopener noreferrer\">Hawaii Department of Budget and Finance</a>.",
+        "IDAHO": "Profile: Idaho. Education-forward standard model with moderate health care, transportation, and local government allocations. Source: <a href=\"https://dfm.idaho.gov/publications/eab/\" target=\"_blank\" rel=\"noopener noreferrer\">Idaho Division of Financial Management</a>.",
+        "ILLINOIS": "Profile: Illinois. High-property model with elevated education, local service, health care, debt-adjacent administration, and public safety weights. Source: <a href=\"https://budget.illinois.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Illinois Governor's Office of Management and Budget</a>.",
+        "INDIANA": "Profile: Indiana. Balanced Midwest model with education, health care, transportation, and public safety as core state allocations. Source: <a href=\"https://www.in.gov/sba/budget-information/\" target=\"_blank\" rel=\"noopener noreferrer\">Indiana State Budget Agency</a>.",
+        "IOWA": "Profile: Iowa. Education and health care weighted model with rural infrastructure and local community service support. Source: <a href=\"https://dom.iowa.gov/state-budget\" target=\"_blank\" rel=\"noopener noreferrer\">Iowa Department of Management</a>.",
+        "KANSAS": "Profile: Kansas. Education-forward plains-state model with health care, transportation, and public safety balancing shares. Source: <a href=\"https://budget.ks.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Kansas Division of the Budget</a>.",
+        "KENTUCKY": "Profile: Kentucky. Health care and education weighted model with meaningful income security and public safety allocations. Source: <a href=\"https://osbd.ky.gov/Publications/Pages/Budget-Documents.aspx\" target=\"_blank\" rel=\"noopener noreferrer\">Kentucky Office of State Budget Director</a>.",
+        "LOUISIANA": "Profile: Louisiana. Health care, education, infrastructure, and public safety model reflecting Gulf-state service and resilience needs. Source: <a href=\"https://www.doa.la.gov/doa/opb/budget-documents/\" target=\"_blank\" rel=\"noopener noreferrer\">Louisiana Office of Planning and Budget</a>.",
+        "MAINE": "Profile: Maine. High local-service and health care model with education, transportation, and statewide administration needs. Source: <a href=\"https://www.maine.gov/budget/budget-information/budget-documents\" target=\"_blank\" rel=\"noopener noreferrer\">Maine Bureau of the Budget</a>.",
+        "MARYLAND": "Profile: Maryland. Expanded services model with higher education, health care, transit, income security, and local government weights. Source: <a href=\"https://dbm.maryland.gov/budget/Pages/operbudget.aspx\" target=\"_blank\" rel=\"noopener noreferrer\">Maryland Department of Budget and Management</a>.",
+        "MASSACHUSETTS": "Profile: Massachusetts. Expanded services model with strong education, health care, transit, local services, and income support allocations. Source: <a href=\"https://budget.digital.mass.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Massachusetts Budget Office</a>.",
+        "MICHIGAN": "Profile: Michigan. Balanced model with education, health care, transportation, public safety, and local service weights. Source: <a href=\"https://www.michigan.gov/budget/budget-offices/ofm/budget-documents\" target=\"_blank\" rel=\"noopener noreferrer\">Michigan State Budget Office</a>.",
+        "MINNESOTA": "Profile: Minnesota. Expanded services model with higher education, health care, income security, and local government allocations. Source: <a href=\"https://mn.gov/mmb/budget/state-budget-overview/current-budget/\" target=\"_blank\" rel=\"noopener noreferrer\">Minnesota Management and Budget</a>.",
+        "MISSISSIPPI": "Profile: Mississippi. Education and health care weighted model with public safety, income security, and rural infrastructure allocations. Source: <a href=\"https://www.dfa.ms.gov/budget-accounting/budget\" target=\"_blank\" rel=\"noopener noreferrer\">Mississippi Department of Finance and Administration</a>.",
+        "MISSOURI": "Profile: Missouri. Balanced model emphasizing education, health care, transportation, public safety, and local community services. Source: <a href=\"https://oa.mo.gov/budget-planning/budget-information\" target=\"_blank\" rel=\"noopener noreferrer\">Missouri Office of Administration Budget and Planning</a>.",
+        "MONTANA": "Profile: Montana. Rural-state model with higher transportation, local services, education, and health care balancing shares. Source: <a href=\"https://budget.mt.gov/Budgets\" target=\"_blank\" rel=\"noopener noreferrer\">Montana Office of Budget and Program Planning</a>.",
+        "NEBRASKA": "Profile: Nebraska. High-property model with education, local community, health care, and transportation allocations. Source: <a href=\"https://budget.nebraska.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Nebraska Budget Division</a>.",
+        "NEVADA": "Profile: Nevada. No individual income tax model with tourism-sensitive education, health care, transportation, and public safety allocations. Source: <a href=\"https://budget.nv.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Nevada Governor's Finance Office</a>.",
+        "NEW_HAMPSHIRE": "Profile: New Hampshire. No broad income tax and high-property model with stronger local schools, municipal services, and public safety weights. Source: <a href=\"https://www.das.nh.gov/budget/\" target=\"_blank\" rel=\"noopener noreferrer\">New Hampshire Budget Office</a>.",
+        "NEW_JERSEY": "Profile: New Jersey. High-property expanded services model with education, local services, transit, health care, and state operations weights. Source: <a href=\"https://www.nj.gov/treasury/omb/publications/26budget/\" target=\"_blank\" rel=\"noopener noreferrer\">New Jersey Office of Management and Budget</a>.",
+        "NEW_MEXICO": "Profile: New Mexico. Health care, education, income security, and infrastructure weighted model with significant state service needs. Source: <a href=\"https://www.nmlegis.gov/Entity/LFC/Session_Publications_Budget_Recommendations\" target=\"_blank\" rel=\"noopener noreferrer\">New Mexico Legislative Finance Committee</a>.",
+        "NEW_YORK": "Profile: New York. Expanded services model with higher health care, education, transit, income security, and local government weights. Source: <a href=\"https://www.budget.ny.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">New York State Division of the Budget</a>.",
+        "NORTH_CAROLINA": "Profile: North Carolina. Growth-state model emphasizing education, health care, transportation, and public safety. Source: <a href=\"https://www.osbm.nc.gov/budget\" target=\"_blank\" rel=\"noopener noreferrer\">North Carolina Office of State Budget and Management</a>.",
+        "NORTH_DAKOTA": "Profile: North Dakota. Resource and rural-state model with transportation, education, health care, and general operations weights. Source: <a href=\"https://www.omb.nd.gov/financial-transparency/budget\" target=\"_blank\" rel=\"noopener noreferrer\">North Dakota Office of Management and Budget</a>.",
+        "OHIO": "Profile: Ohio. Balanced model with strong health care, education, local services, transportation, and public safety allocations. Source: <a href=\"https://budget.ohio.gov/budget-categories/budget-requests-and-enacted-budget\" target=\"_blank\" rel=\"noopener noreferrer\">Ohio Office of Budget and Management</a>.",
+        "OKLAHOMA": "Profile: Oklahoma. Education, health care, transportation, and public safety model with energy-state revenue dynamics. Source: <a href=\"https://oklahoma.gov/omes/services/budget.html\" target=\"_blank\" rel=\"noopener noreferrer\">Oklahoma Office of Management and Enterprise Services</a>.",
+        "OREGON": "Profile: Oregon. Expanded services model with higher health care, education, income security, transportation, and local service weights. Source: <a href=\"https://www.oregon.gov/das/financial/pages/budget.aspx\" target=\"_blank\" rel=\"noopener noreferrer\">Oregon Department of Administrative Services</a>.",
+        "PENNSYLVANIA": "Profile: Pennsylvania. Balanced model with health care, education, local services, transportation, and public safety allocations. Source: <a href=\"https://www.pa.gov/agencies/budget.html\" target=\"_blank\" rel=\"noopener noreferrer\">Pennsylvania Office of the Budget</a>.",
+        "RHODE_ISLAND": "Profile: Rhode Island. Compact expanded-services model with education, health care, local services, and state administration weights. Source: <a href=\"https://omb.ri.gov/budget-office\" target=\"_blank\" rel=\"noopener noreferrer\">Rhode Island Office of Management and Budget</a>.",
+        "SOUTH_CAROLINA": "Profile: South Carolina. Education, health care, transportation, and public safety model with growing local service needs. Source: <a href=\"https://www.admin.sc.gov/budget\" target=\"_blank\" rel=\"noopener noreferrer\">South Carolina Executive Budget Office</a>.",
+        "SOUTH_DAKOTA": "Profile: South Dakota. No individual income tax model with education, local services, transportation, and general government allocations. Source: <a href=\"https://bfm.sd.gov/budget/\" target=\"_blank\" rel=\"noopener noreferrer\">South Dakota Bureau of Finance and Management</a>.",
+        "TENNESSEE": "Profile: Tennessee. No individual income tax model emphasizing education, health care, transportation, public safety, and general state services. Source: <a href=\"https://www.tn.gov/finance/fa/fa-budget-information.html\" target=\"_blank\" rel=\"noopener noreferrer\">Tennessee Department of Finance and Administration</a>.",
+        "TEXAS": "Profile: Texas. No individual income tax model with high local property funding, education, transportation, public safety, and health care weights. Source: <a href=\"https://www.lbb.texas.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Texas Legislative Budget Board</a>.",
+        "UTAH": "Profile: Utah. Education-forward model with health care, transportation, public safety, and state operations balancing shares. Source: <a href=\"https://gomb.utah.gov/budget/\" target=\"_blank\" rel=\"noopener noreferrer\">Utah Governor's Office of Planning and Budget</a>.",
+        "VERMONT": "Profile: Vermont. Expanded services and high local-cost model with education, health care, income security, and local service weights. Source: <a href=\"https://finance.vermont.gov/budget/budget-recommendations/operating-budget\" target=\"_blank\" rel=\"noopener noreferrer\">Vermont Department of Finance and Management</a>.",
+        "VIRGINIA": "Profile: Virginia. Balanced services model with education, health care, transportation, public safety, and local government allocations. Source: <a href=\"https://dpb.virginia.gov/budget/budget.cfm\" target=\"_blank\" rel=\"noopener noreferrer\">Virginia Department of Planning and Budget</a>.",
+        "WASHINGTON": "Profile: Washington. No individual income tax model with higher education, health care, transportation, environmental, and state service weights. Source: <a href=\"https://ofm.wa.gov/budget\" target=\"_blank\" rel=\"noopener noreferrer\">Washington Office of Financial Management</a>.",
+        "WEST_VIRGINIA": "Profile: West Virginia. Health care, education, transportation, income security, and rural service model. Source: <a href=\"https://budget.wv.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">West Virginia State Budget Office</a>.",
+        "WISCONSIN": "Profile: Wisconsin. Education, health care, local service, transportation, and public safety model with strong property-tax school funding. Source: <a href=\"https://doa.wi.gov/Pages/StateFinances/CurrentBiennialBudget.aspx\" target=\"_blank\" rel=\"noopener noreferrer\">Wisconsin Department of Administration</a>.",
+        "WYOMING": "Profile: Wyoming. No individual income tax and resource-state model with education, transportation, local services, and general operations weights. Source: <a href=\"https://sao.wyo.gov/budget-division/\" target=\"_blank\" rel=\"noopener noreferrer\">Wyoming State Budget Division</a>."
+    };
+
+    let taxChart = null;
+    let currentCategoryData = [];
+    let currentTotalTax = 0;
+
+    const categoryDetails = {
+        "Health Care": "A combined estimate of federal Medicare and health subsidy spending plus state health program allocations, such as Medicaid and public health services.",
+        "Education": "Estimated support for K-12 schools, higher education, and federal education spending, with property tax weighting where local school funding is prominent.",
+        "Local Community/County": "Local services funded mainly through property taxes, including municipal operations, county services, libraries, parks, and local government functions.",
+        "Social Security": "The portion of federal tax associated with Social Security retirement, disability, and survivor benefit payments.",
+        "National Defense & Veterans": "Federal allocations connected to defense activities and veterans programs, grouped together for a clearer chart.",
+        "Income Security & Welfare": "Programs that support household income stability, food assistance, unemployment-related support, and other safety net functions.",
+        "Interest on National Debt": "Federal tax dollars estimated for interest payments on existing national debt obligations.",
+        "Public Safety & Justice": "State, local, and federal justice-related spending, including courts, corrections, law enforcement, and public safety services.",
+        "Transportation & Infrastructure": "Roads, bridges, transit, transportation departments, and related federal infrastructure spending.",
+        "Gov Administration & Other": "General government operations and remaining public services that do not fit cleanly into the other categories."
+    };
+
+    const stateAllocationModels = {
+        "ALABAMA": { h: 0.20, e: 0.55, i: 0.06, j: 0.09, t: 0.05, a: 0.05, pe: 0.45, l: 0.40, pj: 0.10, pt: 0.03, pa: 0.02 },
+        "ALASKA": { h: 0.24, e: 0.28, i: 0.07, j: 0.12, t: 0.17, a: 0.12, pe: 0.38, l: 0.42, pj: 0.08, pt: 0.05, pa: 0.07 },
+        "ARIZONA": { h: 0.31, e: 0.32, i: 0.08, j: 0.09, t: 0.11, a: 0.09, pe: 0.43, l: 0.37, pj: 0.08, pt: 0.06, pa: 0.06 },
+        "ARKANSAS": { h: 0.33, e: 0.30, i: 0.10, j: 0.08, t: 0.09, a: 0.10, pe: 0.44, l: 0.36, pj: 0.08, pt: 0.05, pa: 0.07 },
+        "CALIFORNIA": { h: 0.34, e: 0.28, i: 0.14, j: 0.07, t: 0.08, a: 0.09, pe: 0.42, l: 0.35, pj: 0.08, pt: 0.06, pa: 0.09 },
+        "COLORADO": { h: 0.37, e: 0.27, i: 0.10, j: 0.10, t: 0.08, a: 0.08, pe: 0.50, l: 0.50, pj: 0.00, pt: 0.00, pa: 0.00 },
+        "CONNECTICUT": { h: 0.30, e: 0.29, i: 0.09, j: 0.07, t: 0.06, a: 0.19, pe: 0.55, l: 0.34, pj: 0.05, pt: 0.02, pa: 0.04 },
+        "DELAWARE": { h: 0.31, e: 0.33, i: 0.08, j: 0.09, t: 0.07, a: 0.12, pe: 0.42, l: 0.38, pj: 0.08, pt: 0.04, pa: 0.08 },
+        "FLORIDA": { h: 0.32, e: 0.31, i: 0.07, j: 0.09, t: 0.12, a: 0.09, pe: 0.42, l: 0.40, pj: 0.10, pt: 0.04, pa: 0.04 },
+        "GEORGIA": { h: 0.31, e: 0.34, i: 0.07, j: 0.10, t: 0.09, a: 0.09, pe: 0.45, l: 0.36, pj: 0.09, pt: 0.05, pa: 0.05 },
+        "HAWAII": { h: 0.30, e: 0.34, i: 0.09, j: 0.06, t: 0.11, a: 0.10, pe: 0.40, l: 0.34, pj: 0.06, pt: 0.08, pa: 0.12 },
+        "IDAHO": { h: 0.29, e: 0.39, i: 0.06, j: 0.08, t: 0.09, a: 0.09, pe: 0.48, l: 0.34, pj: 0.07, pt: 0.05, pa: 0.06 },
+        "ILLINOIS": { h: 0.30, e: 0.28, i: 0.08, j: 0.07, t: 0.06, a: 0.21, pe: 0.56, l: 0.33, pj: 0.05, pt: 0.02, pa: 0.04 },
+        "INDIANA": { h: 0.30, e: 0.35, i: 0.07, j: 0.09, t: 0.09, a: 0.10, pe: 0.48, l: 0.34, pj: 0.07, pt: 0.05, pa: 0.06 },
+        "IOWA": { h: 0.31, e: 0.34, i: 0.08, j: 0.07, t: 0.09, a: 0.11, pe: 0.50, l: 0.34, pj: 0.06, pt: 0.04, pa: 0.06 },
+        "KANSAS": { h: 0.29, e: 0.37, i: 0.07, j: 0.08, t: 0.09, a: 0.10, pe: 0.50, l: 0.33, pj: 0.07, pt: 0.04, pa: 0.06 },
+        "KENTUCKY": { h: 0.34, e: 0.30, i: 0.10, j: 0.09, t: 0.08, a: 0.09, pe: 0.45, l: 0.36, pj: 0.08, pt: 0.05, pa: 0.06 },
+        "LOUISIANA": { h: 0.34, e: 0.28, i: 0.09, j: 0.10, t: 0.10, a: 0.09, pe: 0.43, l: 0.36, pj: 0.09, pt: 0.06, pa: 0.06 },
+        "MAINE": { h: 0.35, e: 0.28, i: 0.09, j: 0.07, t: 0.09, a: 0.12, pe: 0.43, l: 0.40, pj: 0.06, pt: 0.05, pa: 0.06 },
+        "MARYLAND": { h: 0.32, e: 0.32, i: 0.10, j: 0.08, t: 0.08, a: 0.10, pe: 0.47, l: 0.34, pj: 0.07, pt: 0.05, pa: 0.07 },
+        "MASSACHUSETTS": { h: 0.33, e: 0.30, i: 0.11, j: 0.06, t: 0.09, a: 0.11, pe: 0.45, l: 0.36, pj: 0.06, pt: 0.05, pa: 0.08 },
+        "MICHIGAN": { h: 0.33, e: 0.31, i: 0.08, j: 0.08, t: 0.10, a: 0.10, pe: 0.47, l: 0.36, pj: 0.07, pt: 0.05, pa: 0.05 },
+        "MINNESOTA": { h: 0.34, e: 0.31, i: 0.11, j: 0.06, t: 0.08, a: 0.10, pe: 0.47, l: 0.36, pj: 0.06, pt: 0.04, pa: 0.07 },
+        "MISSISSIPPI": { h: 0.35, e: 0.31, i: 0.10, j: 0.09, t: 0.07, a: 0.08, pe: 0.44, l: 0.37, pj: 0.09, pt: 0.04, pa: 0.06 },
+        "MISSOURI": { h: 0.32, e: 0.32, i: 0.08, j: 0.09, t: 0.09, a: 0.10, pe: 0.46, l: 0.36, pj: 0.08, pt: 0.05, pa: 0.05 },
+        "MONTANA": { h: 0.30, e: 0.30, i: 0.08, j: 0.07, t: 0.14, a: 0.11, pe: 0.43, l: 0.39, pj: 0.06, pt: 0.06, pa: 0.06 },
+        "NEBRASKA": { h: 0.30, e: 0.36, i: 0.07, j: 0.07, t: 0.09, a: 0.11, pe: 0.55, l: 0.32, pj: 0.05, pt: 0.03, pa: 0.05 },
+        "NEVADA": { h: 0.31, e: 0.31, i: 0.07, j: 0.10, t: 0.11, a: 0.10, pe: 0.40, l: 0.38, pj: 0.10, pt: 0.05, pa: 0.07 },
+        "NEW_HAMPSHIRE": { h: 0.27, e: 0.23, i: 0.06, j: 0.08, t: 0.08, a: 0.28, pe: 0.60, l: 0.30, pj: 0.05, pt: 0.02, pa: 0.03 },
+        "NEW_JERSEY": { h: 0.31, e: 0.30, i: 0.09, j: 0.07, t: 0.08, a: 0.15, pe: 0.58, l: 0.31, pj: 0.05, pt: 0.03, pa: 0.03 },
+        "NEW_MEXICO": { h: 0.36, e: 0.29, i: 0.10, j: 0.08, t: 0.09, a: 0.08, pe: 0.42, l: 0.38, pj: 0.08, pt: 0.06, pa: 0.06 },
+        "NEW_YORK": { h: 0.36, e: 0.27, i: 0.11, j: 0.06, t: 0.09, a: 0.11, pe: 0.48, l: 0.34, pj: 0.06, pt: 0.06, pa: 0.06 },
+        "NORTH_CAROLINA": { h: 0.31, e: 0.35, i: 0.07, j: 0.09, t: 0.09, a: 0.09, pe: 0.45, l: 0.37, pj: 0.08, pt: 0.05, pa: 0.05 },
+        "NORTH_DAKOTA": { h: 0.29, e: 0.30, i: 0.06, j: 0.07, t: 0.15, a: 0.13, pe: 0.44, l: 0.37, pj: 0.06, pt: 0.06, pa: 0.07 },
+        "OHIO": { h: 0.34, e: 0.30, i: 0.08, j: 0.08, t: 0.09, a: 0.11, pe: 0.46, l: 0.37, pj: 0.07, pt: 0.04, pa: 0.06 },
+        "OKLAHOMA": { h: 0.31, e: 0.33, i: 0.07, j: 0.10, t: 0.10, a: 0.09, pe: 0.45, l: 0.36, pj: 0.08, pt: 0.05, pa: 0.06 },
+        "OREGON": { h: 0.35, e: 0.29, i: 0.11, j: 0.06, t: 0.10, a: 0.09, pe: 0.43, l: 0.37, pj: 0.06, pt: 0.07, pa: 0.07 },
+        "PENNSYLVANIA": { h: 0.35, e: 0.29, i: 0.08, j: 0.08, t: 0.09, a: 0.11, pe: 0.48, l: 0.35, pj: 0.07, pt: 0.04, pa: 0.06 },
+        "RHODE_ISLAND": { h: 0.33, e: 0.30, i: 0.09, j: 0.07, t: 0.07, a: 0.14, pe: 0.46, l: 0.36, pj: 0.06, pt: 0.04, pa: 0.08 },
+        "SOUTH_CAROLINA": { h: 0.31, e: 0.34, i: 0.07, j: 0.09, t: 0.10, a: 0.09, pe: 0.45, l: 0.37, pj: 0.08, pt: 0.05, pa: 0.05 },
+        "SOUTH_DAKOTA": { h: 0.28, e: 0.35, i: 0.06, j: 0.08, t: 0.11, a: 0.12, pe: 0.46, l: 0.36, pj: 0.07, pt: 0.05, pa: 0.06 },
+        "TENNESSEE": { h: 0.33, e: 0.32, i: 0.07, j: 0.09, t: 0.10, a: 0.09, pe: 0.43, l: 0.39, pj: 0.08, pt: 0.05, pa: 0.05 },
+        "TEXAS": { h: 0.30, e: 0.33, i: 0.06, j: 0.10, t: 0.12, a: 0.09, pe: 0.52, l: 0.33, pj: 0.08, pt: 0.04, pa: 0.03 },
+        "UTAH": { h: 0.27, e: 0.43, i: 0.06, j: 0.07, t: 0.09, a: 0.08, pe: 0.48, l: 0.35, pj: 0.07, pt: 0.05, pa: 0.05 },
+        "VERMONT": { h: 0.35, e: 0.30, i: 0.10, j: 0.06, t: 0.08, a: 0.11, pe: 0.50, l: 0.34, pj: 0.05, pt: 0.04, pa: 0.07 },
+        "VIRGINIA": { h: 0.30, e: 0.34, i: 0.07, j: 0.08, t: 0.10, a: 0.11, pe: 0.46, l: 0.36, pj: 0.07, pt: 0.05, pa: 0.06 },
+        "WASHINGTON": { h: 0.33, e: 0.33, i: 0.08, j: 0.06, t: 0.12, a: 0.08, pe: 0.45, l: 0.37, pj: 0.06, pt: 0.07, pa: 0.05 },
+        "WEST_VIRGINIA": { h: 0.36, e: 0.27, i: 0.10, j: 0.08, t: 0.10, a: 0.09, pe: 0.42, l: 0.39, pj: 0.07, pt: 0.06, pa: 0.06 },
+        "WISCONSIN": { h: 0.33, e: 0.32, i: 0.08, j: 0.07, t: 0.09, a: 0.11, pe: 0.51, l: 0.34, pj: 0.06, pt: 0.04, pa: 0.05 },
+        "WYOMING": { h: 0.26, e: 0.35, i: 0.05, j: 0.07, t: 0.16, a: 0.11, pe: 0.46, l: 0.36, pj: 0.06, pt: 0.06, pa: 0.06 }
+    };
+
+    function buildStateCategories(model, stateTax, propTax, fedAlloc) {
+        return {
+            "Health Care": (stateTax * model.h) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+            "Education": (propTax * model.pe) + (stateTax * model.e) + fedAlloc.education,
+            "Local Community/County": propTax * model.l,
+            "Social Security": fedAlloc.socialSecurity,
+            "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+            "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * model.i),
+            "Interest on National Debt": fedAlloc.nationalDebtInterest,
+            "Public Safety & Justice": (stateTax * model.j) + (propTax * model.pj) + fedAlloc.justice,
+            "Transportation & Infrastructure": (stateTax * model.t) + (propTax * model.pt) + fedAlloc.transportation,
+            "Gov Administration & Other": (stateTax * model.a) + (propTax * model.pa) + fedAlloc.admin
+        };
+    }
+
+    function formatCurrency(value) {
+        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+
+    function renderCategoryDetails(categoryName) {
+        const detailEl = document.getElementById('categoryDetail');
+        const category = currentCategoryData.find(item => item.name === categoryName) || currentCategoryData[0];
+
+        if (!category) {
+            detailEl.innerHTML = `
+                <h2>Category Details</h2>
+                <p>Enter tax amounts to see category details.</p>
+            `;
+            return;
+        }
+
+        const pct = currentTotalTax > 0 ? ((category.value / currentTotalTax) * 100).toFixed(1) : '0.0';
+        detailEl.innerHTML = `
+            <h2>${category.name}</h2>
+            <div class="amount">${formatCurrency(category.value)} • ${pct}% of your tax footprint</div>
+            <p>${categoryDetails[category.name] || 'This category represents one part of the estimated tax allocation.'}</p>
+        `;
+    }
+
+    function renderCategoryList() {
+        const listEl = document.getElementById('categoryList');
+
+        if (!currentCategoryData.length) {
+            listEl.innerHTML = '<li>No tax allocation to display yet.</li>';
+            return;
+        }
+
+        listEl.innerHTML = currentCategoryData.map(item => {
+            const pct = currentTotalTax > 0 ? ((item.value / currentTotalTax) * 100).toFixed(1) : '0.0';
+            return `
+                <li>
+                    <span>${item.name}</span>
+                    <span class="category-amount">${formatCurrency(item.value)} (${pct}%)</span>
+                    <button type="button" onclick="renderCategoryDetails('${item.name.replace(/'/g, "\\'")}')">More Info</button>
+                </li>
+            `;
+        }).join('');
+    }
+
+    function escapeReceiptHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    function printCategoryList() {
+        if (!currentCategoryData.length) {
+            calculateTaxes();
+        }
+        const totalText = document.getElementById('totalDisplay')?.innerText || '';
+        const profileText = document.getElementById('profileDisplay')?.innerText || '';
+        const sourceText = document.getElementById('federalSourceDisplay')?.innerText || '';
+        const rows = currentCategoryData.map(item => {
+            const pct = currentTotalTax > 0 ? ((item.value / currentTotalTax) * 100).toFixed(1) : '0.0';
+            return `<tr><td>${escapeReceiptHtml(getCategoryLabel(item.name))}</td><td>${escapeReceiptHtml(formatCurrency(item.value))}</td><td>${pct}%</td></tr>`;
+        }).join('');
+        const receiptWindow = window.open('', 'taxgalReceipt', 'width=760,height=900');
+        if (!receiptWindow) {
+            window.print();
+            return;
+        }
+        receiptWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <title>TaxGal Printable Category Receipt</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #17212b; margin: 32px; }
+    .receipt { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 24px; margin: 0 0 6px; }
+    .meta { color: #475569; font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+    .total { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; font-weight: 700; margin: 16px 0; background: #f8fafc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 10px 8px; text-align: left; vertical-align: top; }
+    th:nth-child(2), th:nth-child(3), td:nth-child(2), td:nth-child(3) { text-align: right; }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #475569; }
+    .note { color: #64748b; font-size: 12px; line-height: 1.5; margin-top: 18px; }
+    @media print { body { margin: 18px; } }
+  </style>
+</head>
+<body>
+  <main class="receipt">
+    <h1>TaxGal Category Receipt</h1>
+    <div class="meta">Generated from the calculator estimate. This is educational information, not an official tax statement.</div>
+    <div class="total">${escapeReceiptHtml(totalText)}</div>
+    <table>
+      <thead><tr><th>Category</th><th>Amount</th><th>Share</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="note">${escapeReceiptHtml(profileText)}</div>
+    <div class="note">${escapeReceiptHtml(sourceText)}</div>
+  </main>
+  ${'<script>'}window.onload = () => { window.print(); setTimeout(() => window.close(), 300); };${'</scr' + 'ipt>'}
+</body>
+</html>`);
+        receiptWindow.document.close();
+    }
+
+    function setFooterTab(tabName, clickedButton) {
+        document.querySelectorAll('.footer-tab').forEach(button => {
+            button.classList.remove('active');
+            button.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.footer-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+
+        clickedButton.classList.add('active');
+        clickedButton.setAttribute('aria-selected', 'true');
+        document.getElementById(`footer-${tabName}`).classList.add('active');
+    }
+
+    // Build drop-down options on load
+    window.onload = function() {
+        const select = document.getElementById('userState');
+        statesData.forEach(st => {
+            let opt = document.createElement('option');
+            opt.value = st.code;
+            opt.innerHTML = `${st.name}`;
+            if(st.code === "CO") opt.selected = true; // Default to CO to match history
+            select.appendChild(opt);
+        });
+        calculateTaxes();
+    };
+
+    function calculateTaxes() {
+        const stateCode = document.getElementById('userState').value;
+        const stateObj = statesData.find(s => s.code === stateCode);
+        const profile = stateObj.profile;
+        
+        document.getElementById('profileDisplay').innerHTML = profilesDesc[profile];
+
+        const fedTax = parseFloat(document.getElementById('fedTax').value) || 0;
+        const stateTax = parseFloat(document.getElementById('stateTax').value) || 0;
+        const propTax = parseFloat(document.getElementById('propTax').value) || 0;
+        
+        const totalTax = fedTax + stateTax + propTax;
+        currentTotalTax = totalTax;
+        document.getElementById('totalDisplay').innerText = `Total Tax Footprint: $${totalTax.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+        if (totalTax === 0) {
+            currentCategoryData = [];
+            renderCategoryDetails();
+            renderCategoryList();
+            return;
+        }
+
+        // Shared Federal Allocations Base
+        const fedAlloc = {
+            socialSecurity: fedTax * 0.22,
+            medicare: fedTax * 0.14,
+            healthSubsidies: fedTax * 0.14,
+            nationalDebtInterest: fedTax * 0.14,
+            defense: fedTax * 0.13,
+            incomeWelfare: fedTax * 0.10,
+            veterans: fedTax * 0.06,
+            education: fedTax * 0.02,
+            transportation: fedTax * 0.02,
+            justice: fedTax * 0.01,
+            admin: fedTax * 0.02
+        };
+
+        let categories = {};
+
+        // Conditional branching across the fiscal matrix
+        if (stateAllocationModels[profile]) {
+            categories = buildStateCategories(stateAllocationModels[profile], stateTax, propTax, fedAlloc);
+        } else {
+        switch(profile) {
+            case "ALABAMA":
+                categories = {
+                    "Health Care": (stateTax * 0.20) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.45) + (stateTax * 0.55) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.40),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.06),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.09) + (propTax * 0.10) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.05) + (propTax * 0.03) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.05) + (propTax * 0.02) + fedAlloc.admin
+                };
+                break;
+
+            case "COLORADO":
+                categories = {
+                    "Health Care": (stateTax * 0.37) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.50) + (stateTax * 0.18) + (stateTax * 0.09) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.25) + (propTax * 0.15) + (propTax * 0.10),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.10),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.06) + (stateTax * 0.04) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.08) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.08) + fedAlloc.admin
+                };
+                break;
+                
+            case "HIGH_SERVICES":
+                categories = {
+                    "Health Care": (stateTax * 0.34) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.46) + (stateTax * 0.24) + (stateTax * 0.09) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.34),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.14),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.05) + (propTax * 0.08) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.07) + (propTax * 0.04) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.07) + fedAlloc.admin
+                };
+                break;
+
+            case "HIGH_PROPERTY":
+                categories = {
+                    "Health Care": (stateTax * 0.28) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.55) + (stateTax * 0.19) + (stateTax * 0.07) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.35),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.10),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.04) + (propTax * 0.06) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.06) + (propTax * 0.02) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.26) + fedAlloc.admin
+                };
+                break;
+
+            case "NO_INCOME":
+                categories = {
+                    "Health Care": (stateTax * 0.32) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.42) + (stateTax * 0.25) + (stateTax * 0.06) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.40),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.08),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.06) + (propTax * 0.10) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.11) + (propTax * 0.04) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.18) + fedAlloc.admin
+                };
+                break;
+
+            case "STANDARD":
+            default:
+                categories = {
+                    "Health Care": (stateTax * 0.30) + fedAlloc.healthSubsidies + fedAlloc.medicare,
+                    "Education": (propTax * 0.45) + (stateTax * 0.21) + (stateTax * 0.08) + fedAlloc.education,
+                    "Local Community/County": (propTax * 0.35),
+                    "Social Security": fedAlloc.socialSecurity,
+                    "National Defense & Veterans": fedAlloc.defense + fedAlloc.veterans,
+                    "Income Security & Welfare": fedAlloc.incomeWelfare + (stateTax * 0.11),
+                    "Interest on National Debt": fedAlloc.nationalDebtInterest,
+                    "Public Safety & Justice": (stateTax * 0.05) + (propTax * 0.08) + fedAlloc.justice,
+                    "Transportation & Infrastructure": (stateTax * 0.07) + (propTax * 0.04) + fedAlloc.transportation,
+                    "Gov Administration & Other": (stateTax * 0.12) + fedAlloc.admin
+                };
+                break;
+        }
+        }
+
+        // Sort dynamically for clean chart rendering 
+        const sortedData = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+        const labels = sortedData.map(item => item[0]);
+        const values = sortedData.map(item => item[1]);
+        currentCategoryData = sortedData.map(item => ({ name: item[0], value: item[1] }));
+        renderCategoryDetails(currentCategoryData[0].name);
+        renderCategoryList();
+
+        // Draw/Update the Chart.js visual canvas
+        const ctx = document.getElementById('taxChart').getContext('2d');
+        if (taxChart) taxChart.destroy();
+
+        taxChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#1e3a8a', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', 
+                        '#475569', '#64748b', '#94a3b8', '#cbd5e1', '#e2e8f0'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                onClick: function(event, elements) {
+                    if (!elements.length) return;
+                    const index = elements[0].index;
+                    renderCategoryDetails(labels[index]);
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let val = context.raw;
+                                let pct = ((val / totalTax) * 100).toFixed(1);
+                                return ` $${val.toLocaleString('en-US', {maximumFractionDigits:0})} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
